@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Monthly Budget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4">
+    <!-- Top Bar with Language Switcher -->
+    <header class="w-full max-w-7xl mx-auto flex justify-end py-2">
+        <button id="langToggle" class="flex items-center bg-slate-800/80 border border-slate-700 rounded-full p-1 cursor-pointer transition hover:bg-slate-700/80 shadow-sm">
+            <span id="langEn" class="text-[11px] font-bold px-2.5 py-1 rounded-full text-slate-400 transition-colors">EN</span>
+            <span id="langBn" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-indigo-600 text-white transition-colors">BN</span>
+        </button>
+    </header>
+
+    <!-- Main Login Card -->
+    <main class="w-full max-w-md mx-auto my-auto">
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white text-xl font-bold font-serif mb-3 shadow-lg shadow-indigo-600/30">
+                ৳
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Monthly Budget</h1>
+            <p class="text-xs text-slate-400 mt-1 lang-text" data-en="Budget & Expense Manager" data-bn="আপনার ব্যক্তিগত বাজেট ও ব্যয়ের হিসাব রাখুন সহজে">আপনার ব্যক্তিগত বাজেট ও ব্যয়ের হিসাব রাখুন সহজে</p>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-7 shadow-2xl border-t border-slate-700/60">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-5 p-3.5 rounded-xl text-xs font-medium flex items-center gap-2 border {% if category == 'danger' %} bg-rose-950/40 text-rose-300 border-rose-800/50 {% elif category == 'info' %} bg-blue-950/40 text-blue-300 border-blue-800/50 {% else %} bg-emerald-950/40 text-emerald-300 border-emerald-800/50 {% endif %}">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" novalidate class="space-y-4">
+                {{ form.hidden_tag() }}
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 lang-text" data-en="Username" data-bn="ইউজারনেম">ইউজারনেম</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        {{ form.username(class="lang-text w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition", placeholder="আপনার ইউজারনেম", **{'data-en': 'Enter your username', 'data-bn': 'আপনার ইউজারনেম'}) }}
+                    </div>
+                    {% for error in form.username.errors %}
+                        <p class="text-xs text-rose-400 mt-1 font-medium">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 lang-text" data-en="Password" data-bn="পাসওয়ার্ড">পাসওয়ার্ড</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </div>
+                        {{ form.password(class="lang-text w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition tracking-widest", placeholder="••••", **{'data-en': '••••', 'data-bn': '••••'}) }}
+                    </div>
+                    {% for error in form.password.errors %}
+                        <p class="text-xs text-rose-400 mt-1 font-medium">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="flex items-center justify-between text-xs py-1">
+                    <label class="flex items-center text-slate-400 cursor-pointer hover:text-slate-300 select-none">
+                        {{ form.remember(class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-0 focus:ring-offset-0 mr-2") }}
+                        <span class="lang-text" data-en="Remember session" data-bn="লগইন মনে রাখুন">লগইন মনে রাখুন</span>
+                    </label>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full inline-flex justify-center items-center py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/25 transition duration-200 cursor-pointer">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                        <span class="lang-text" data-en="Sign In" data-bn="লগইন করুন">লগইন করুন</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 pt-5 border-t border-slate-800 text-center text-xs text-slate-400">
+                <span class="lang-text" data-en="Don't have an account?" data-bn="অ্যাকাউন্ট নেই?">অ্যাকাউন্ট নেই?</span> 
+                <a href="{{ url_for('auth.register') }}" class="font-semibold text-indigo-400 hover:text-indigo-300 ml-1 transition inline-flex items-center gap-1">
+                    <span class="lang-text" data-en="Create account" data-bn="নতুন অ্যাকাউন্ট খুলুন">নতুন অ্যাকাউন্ট খুলুন</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 border-t border-slate-800/80 mt-8">
+        <p class="text-xs text-slate-500">
+            <span class="lang-text" data-en="Developed by" data-bn="Developed by">Developed by</span> ❤️ 
+            <a href="https://www.facebook.com/anonk3814" target="_blank" class="text-indigo-400 font-medium hover:text-indigo-300 transition">Anon Khan</a>
+        </p>
+    </footer>
+
+    <!-- Language Toggle Script -->
+    <script>
+        const langToggle = document.getElementById('langToggle');
+        const langEn = document.getElementById('langEn');
+        const langBn = document.getElementById('langBn');
+        const langElements = document.querySelectorAll('.lang-text');
+
+        let currentLang = localStorage.getItem('appLang') || 'bn';
+        applyLanguage(currentLang);
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'bn' ? 'en' : 'bn';
+            localStorage.setItem('appLang', currentLang);
+            applyLanguage(currentLang);
+        });
+
+        function applyLanguage(lang) {
+            if (lang === 'en') {
+                langEn.classList.add('bg-indigo-600', 'text-white');
+                langEn.classList.remove('text-slate-400');
+                langBn.classList.remove('bg-indigo-600', 'text-white');
+                langBn.classList.add('text-slate-400');
+            } else {
+                langBn.classList.add('bg-indigo-600', 'text-white');
+                langBn.classList.remove('text-slate-400');
+                langEn.classList.remove('bg-indigo-600', 'text-white');
+                langEn.classList.add('text-slate-400');
+            }
+
+            langElements.forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) {
+                    if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                        el.placeholder = text;
+                    } else {
+                        el.innerText = text;
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

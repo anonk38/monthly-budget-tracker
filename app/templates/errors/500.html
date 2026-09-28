@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 — সার্ভার সমস্যা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; }</style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="max-w-md w-full text-center bg-slate-900/80 border border-slate-800 p-8 rounded-2xl shadow-2xl backdrop-blur">
+        <div class="text-6xl font-extrabold text-amber-500 mb-2">500</div>
+        <h1 class="text-xl font-bold text-white mb-2">সার্ভার ত্রুটি</h1>
+        <p class="text-xs text-slate-400 mb-6">সার্ভারে সাময়িক সমস্যা হচ্ছে। ডেটাবেস আপডেটজনিত কারণে এই এররটি আসতে পারে।</p>
+        <a href="{{ url_for('dashboard.index') }}" class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-lg transition">হোমপেজে যান</a>
+    </div>
+    
+    <div class="mt-8 text-center text-xs text-slate-500">
+        Developed by ❤️ <a href="https://www.facebook.com/anonk3814" target="_blank" class="text-indigo-400 font-medium hover:text-indigo-300 transition">Anon Khan</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Monthly Budget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-16">
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-serif font-bold text-white shadow-lg shadow-indigo-500/30">৳</div>
+                <span class="font-bold text-lg text-white">Monthly Budget</span>
+                <span class="bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[11px] font-bold px-2 py-0.5 rounded ml-2">ADMIN PORTAL</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <span class="text-xs text-slate-400">অ্যাডমিন: <strong class="text-white">admin</strong></span>
+                <a href="{{ url_for('admin.logout') }}" class="text-xs border border-rose-800/80 hover:bg-rose-950/40 text-rose-300 px-3 py-1.5 rounded-lg transition font-medium">লগআউট</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-5 p-3 rounded-xl text-xs font-medium {% if category == 'danger' %} bg-rose-950/40 text-rose-300 border border-rose-800/50 {% else %} bg-emerald-950/40 text-emerald-300 border border-emerald-800/50 {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-white">অ্যাডমিনিস্ট্রেটর কন্ট্রোল প্যানেল</h1>
+            <p class="text-xs text-slate-400 mt-1">ব্যবহারকারীদের অবস্থান পর্যবেক্ষণ ও সিস্টেম নিয়ন্ত্রণ</p>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+            <div class="glass-panel p-5 rounded-2xl">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">মোট নিবন্ধিত ব্যবহারকারী</span>
+                <div class="text-2xl font-bold text-indigo-400 mt-2">{{ total_users }}</div>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">মোট খরচের এন্ট্রি</span>
+                <div class="text-2xl font-bold text-emerald-400 mt-2">{{ total_expenses_count }}</div>
+            </div>
+        </div>
+
+        <!-- Layout Grid: Users Table & Admin Password Change -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left: Users Table (2 Cols) -->
+            <div class="lg:col-span-2 glass-panel rounded-2xl overflow-hidden shadow-lg border-t border-slate-700/50">
+                <div class="p-5 border-b border-slate-800">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">ব্যবহারকারীদের লাইভ লোকেশন ও তথ্য</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800/80 text-slate-300 text-xs uppercase tracking-wider font-semibold">
+                                <th class="py-3 px-4">ইউজার</th>
+                                <th class="py-3 px-4">রোল</th>
+                                <th class="py-3 px-4">লগইন আইপি</th>
+                                <th class="py-3 px-4">সর্বশেষ সক্রিয়</th>
+                                <th class="py-3 px-4 text-right">লাইভ ম্যাপ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            {% for u in users %}
+                            <tr class="hover:bg-slate-800/40 transition">
+                                <td class="py-3.5 px-4 font-semibold text-white">
+                                    {{ u.name }}
+                                    <div class="text-[11px] text-slate-500 font-normal">@{{ u.username }}</div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold {% if u.role == 'ADMIN' %}bg-rose-950 text-rose-300 border border-rose-800{% else %}bg-indigo-950/60 text-indigo-300 border border-indigo-800/50{% endif %}">
+                                        {{ u.role }}
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 font-mono text-xs text-slate-300">{{ u.last_ip }}</td>
+                                <td class="py-3.5 px-4 text-slate-400 text-xs">{{ u.last_login }}</td>
+                                <td class="py-3.5 px-4 text-right">
+                                    {% if u.map_url %}
+                                        <a href="{{ u.map_url }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg transition font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            View Map
+                                        </a>
+                                    {% else %}
+                                        <span class="text-slate-600 text-xs">অপেক্ষমাণ</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Admin Password Change Form (1 Col) -->
+            <div class="glass-panel p-6 rounded-2xl shadow-lg border-t border-slate-700/50 h-fit">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200 mb-4 flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    অ্যাডমিন পাসওয়ার্ড পরিবর্তন
+                </h2>
+                <form action="{{ url_for('admin.change_password') }}" method="POST" class="space-y-3">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1">বর্তমান পাসওয়ার্ড</label>
+                        <input type="password" name="current_password" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1">নতুন পাসওয়ার্ড</label>
+                        <input type="password" name="new_password" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1">পুনরায় লিখুন</label>
+                        <input type="password" name="confirm_password" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <button type="submit" class="w-full mt-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-xl text-xs transition shadow-lg shadow-indigo-600/20">আপডেট করুন</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-6 border-t border-slate-800/80 mt-10">
+        <p class="text-xs text-slate-500">
+            Developed by ❤️ <a href="https://www.facebook.com/anonk3814" target="_blank" class="text-indigo-400 font-medium hover:text-indigo-300 transition">Anon Khan</a>
+        </p>
+    </footer>
+</body>
+</html>

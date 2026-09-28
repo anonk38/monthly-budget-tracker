@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — Monthly Budget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4">
+    <!-- Top Bar with Language Switcher -->
+    <header class="w-full max-w-7xl mx-auto flex justify-end py-2">
+        <button id="langToggle" class="flex items-center bg-slate-800/80 border border-slate-700 rounded-full p-1 cursor-pointer transition hover:bg-slate-700/80 shadow-sm">
+            <span id="langEn" class="text-[11px] font-bold px-2.5 py-1 rounded-full text-slate-400 transition-colors">EN</span>
+            <span id="langBn" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-indigo-600 text-white transition-colors">BN</span>
+        </button>
+    </header>
+
+    <!-- Main Registration Card -->
+    <main class="w-full max-w-md mx-auto my-auto">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-white tracking-tight lang-text" data-en="Create Account" data-bn="নতুন অ্যাকাউন্ট খুলুন">নতুন অ্যাকাউন্ট খুলুন</h1>
+            <p class="text-xs text-slate-400 mt-1 lang-text" data-en="Start tracking your budget with confidence" data-bn="আপনার আর্থিক ব্যবস্থাপনার যাত্রা শুরু হোক">আপনার আর্থিক ব্যবস্থাপনার যাত্রা শুরু হোক</p>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-7 shadow-2xl border-t border-slate-700/60">
+            <form method="POST" novalidate class="space-y-4">
+                {{ form.hidden_tag() }}
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 lang-text" data-en="Full Name" data-bn="পুরো নাম">পুরো নাম</label>
+                    {{ form.name(class="lang-text w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:outline-none focus:border-indigo-500 transition", placeholder="আপনার পুরো নাম", **{'data-en': 'Enter your full name', 'data-bn': 'আপনার পুরো নাম'}) }}
+                    {% for error in form.name.errors %}<p class="text-xs text-rose-400 mt-1">{{ error }}</p>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 lang-text" data-en="Username" data-bn="ইউজারনেম">ইউজারনেম</label>
+                    {{ form.username(class="lang-text w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:outline-none focus:border-indigo-500 transition", placeholder="ইউজারনেম (ইংরেজিতে)", **{'data-en': 'Choose a username', 'data-bn': 'ইউজারনেম (ইংরেজিতে)'}) }}
+                    {% for error in form.username.errors %}<p class="text-xs text-rose-400 mt-1">{{ error }}</p>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 lang-text" data-en="PIN / Password (min 4 digits)" data-bn="পাসওয়ার্ড (কমপক্ষে ৪ সংখ্যা)">পাসওয়ার্ড (কমপক্ষে ৪ সংখ্যা)</label>
+                    {{ form.password(class="lang-text w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:outline-none focus:border-indigo-500 transition tracking-widest", placeholder="••••", **{'data-en': '••••', 'data-bn': '••••'}) }}
+                    {% for error in form.password.errors %}<p class="text-xs text-rose-400 mt-1">{{ error }}</p>{% endfor %}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 lang-text" data-en="Confirm Password" data-bn="পাসওয়ার্ড নিশ্চিত করুন">পাসওয়ার্ড নিশ্চিত করুন</label>
+                    {{ form.confirm_password(class="lang-text w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:outline-none focus:border-indigo-500 transition tracking-widest", placeholder="••••", **{'data-en': '••••', 'data-bn': '••••'}) }}
+                    {% for error in form.confirm_password.errors %}<p class="text-xs text-rose-400 mt-1">{{ error }}</p>{% endfor %}
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full inline-flex justify-center items-center py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/25 transition duration-200 cursor-pointer">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                        <span class="lang-text" data-en="Create Account" data-bn="অ্যাকাউন্ট তৈরি করুন">অ্যাকাউন্ট তৈরি করুন</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 pt-5 border-t border-slate-800 text-center text-xs text-slate-400">
+                <span class="lang-text" data-en="Already have an account?" data-bn="আগে থেকেই অ্যাকাউন্ট আছে?">আগে থেকেই অ্যাকাউন্ট আছে?</span> 
+                <a href="{{ url_for('auth.login') }}" class="font-semibold text-indigo-400 hover:text-indigo-300 ml-1 transition inline-flex items-center gap-1">
+                    <span class="lang-text" data-en="Sign In" data-bn="লগইন করুন">লগইন করুন</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 border-t border-slate-800/80 mt-8">
+        <p class="text-xs text-slate-500">
+            <span class="lang-text" data-en="Developed by" data-bn="Developed by">Developed by</span> ❤️ 
+            <a href="https://www.facebook.com/anonk3814" target="_blank" class="text-indigo-400 font-medium hover:text-indigo-300 transition">Anon Khan</a>
+        </p>
+    </footer>
+
+    <!-- Language Toggle Script -->
+    <script>
+        const langToggle = document.getElementById('langToggle');
+        const langEn = document.getElementById('langEn');
+        const langBn = document.getElementById('langBn');
+        const langElements = document.querySelectorAll('.lang-text');
+
+        let currentLang = localStorage.getItem('appLang') || 'bn';
+        applyLanguage(currentLang);
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'bn' ? 'en' : 'bn';
+            localStorage.setItem('appLang', currentLang);
+            applyLanguage(currentLang);
+        });
+
+        function applyLanguage(lang) {
+            if (lang === 'en') {
+                langEn.classList.add('bg-indigo-600', 'text-white');
+                langEn.classList.remove('text-slate-400');
+                langBn.classList.remove('bg-indigo-600', 'text-white');
+                langBn.classList.add('text-slate-400');
+            } else {
+                langBn.classList.add('bg-indigo-600', 'text-white');
+                langBn.classList.remove('text-slate-400');
+                langEn.classList.remove('bg-indigo-600', 'text-white');
+                langEn.classList.add('text-slate-400');
+            }
+
+            langElements.forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) {
+                    if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                        el.placeholder = text;
+                    } else {
+                        el.innerText = text;
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

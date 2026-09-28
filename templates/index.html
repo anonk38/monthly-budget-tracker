@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div class="max-w-6xl mx-auto p-6">
+        
+        <!-- Header & Month Selector -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Expense Dashboard</h1>
+            <form action="/" method="GET" class="flex gap-2">
+                <input type="month" name="month" value="{{ current_month }}" class="border p-2 rounded-lg shadow-sm" onchange="this.form.submit()">
+            </form>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="text-sm font-medium text-gray-500">Total Budget</h3>
+                <p class="text-2xl font-bold text-blue-600">৳ {{ budget }}</p>
+                <form action="/set_budget" method="POST" class="mt-2 flex gap-2">
+                    <input type="hidden" name="month_year" value="{{ current_month }}">
+                    <input type="number" name="amount" placeholder="Update Budget" class="border p-1 text-sm rounded w-2/3">
+                    <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Set</button>
+                </form>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="text-sm font-medium text-gray-500">Total Spent</h3>
+                <p class="text-2xl font-bold text-red-500">৳ {{ total_spent }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="text-sm font-medium text-gray-500">Remaining Balance</h3>
+                <p class="text-2xl font-bold {% if remaining < 0 %} text-red-600 {% else %} text-green-500 {% endif %}">
+                    ৳ {{ remaining }}
+                    {% if remaining < 0 %} <span class="text-xs text-red-500 block">(Out of pocket!)</span> {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Add Expense Form -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 col-span-1">
+                <h2 class="text-xl font-semibold mb-4">Add New Expense</h2>
+                <form action="/add_expense" method="POST" class="flex flex-col gap-4">
+                    <input type="date" name="date" required class="border p-2 rounded focus:outline-blue-500">
+                    <input type="text" name="description" placeholder="Description (e.g., KFC)" required class="border p-2 rounded focus:outline-blue-500">
+                    <select name="category" class="border p-2 rounded focus:outline-blue-500">
+                        <option value="Food & Dining">Food & Dining</option>
+                        <option value="Rent & Hostel">Rent & Hostel</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Personal Care">Personal Care</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <input type="number" name="amount" placeholder="Amount (৳)" required class="border p-2 rounded focus:outline-blue-500">
+                    <button type="submit" class="bg-gray-900 text-white font-medium py-2 rounded hover:bg-gray-800 transition">Add Expense</button>
+                </form>
+                
+                <!-- Chart -->
+                <div class="mt-8">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Expense Log Table -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 col-span-2 overflow-x-auto">
+                <h2 class="text-xl font-semibold mb-4">Expense Log ({{ current_month }})</h2>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b text-gray-500 text-sm">
+                            <th class="p-3">Date</th>
+                            <th class="p-3">Description</th>
+                            <th class="p-3">Category</th>
+                            <th class="p-3">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for exp in expenses %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-3 text-sm text-gray-600">{{ exp[1] }}</td>
+                            <td class="p-3 font-medium">{{ exp[2] }}</td>
+                            <td class="p-3">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">{{ exp[3] }}</span>
+                            </td>
+                            <td class="p-3 font-semibold text-gray-700">৳ {{ exp[4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mandatory Footer -->
+    <footer class="text-center py-6 mt-10 border-t border-gray-200">
+        <p class="text-gray-500 text-sm font-medium">
+            Developed by ❤️ <a href="https://www.facebook.com/anonk3814" target="_blank" class="text-blue-600 hover:underline">Anon Khan</a>
+        </p>
+    </footer>
+
+    <!-- Chart Script -->
+    <script>
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        const categoryData = {{ category_data | tojson }};
+        
+        const labels = categoryData.map(item => item[0]);
+        const data = categoryData.map(item => item[1]);
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#3b82f6', '#f43f5e', '#10b981', '#f59e0b', '#8b5cf6', '#64748b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } },
+                cutout: '70%'
+            }
+        });
+    </script>
+</body>
+</html>
