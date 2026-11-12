@@ -37,7 +37,17 @@ A modern, mobile-first personal finance and monthly budget management web applic
 ## 💻 How to Run Locally
 
 1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/ak2program/Monthly-Budget.git](https://github.com/ak2program/Monthly-Budget.git)
-   cd Monthly-Budget
-   
+   `git clone https://github.com/ak2program/Monthly-Budget.git`
+
+2. **Install dependencies:**
+   `pip install -r requirements.txt`
+
+3. **Run the app:**
+   `python wsgi.py`
+
+---
+
+## 👤 Developer
+
+**Anon Khan**
+- Facebook: [Anon Khan](https://www.facebook.com/anonk3814)
