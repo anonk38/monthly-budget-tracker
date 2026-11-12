@@ -49,14 +49,18 @@ def index():
         if u.latitude and u.longitude:
             map_url = f"https://www.google.com/maps?q={u.latitude},{u.longitude}"
 
+        # User model-এ last_login_ip / last_login_at কলাম নেই, তাই নিরাপদে পড়া হচ্ছে
+        last_ip = getattr(u, 'last_login_ip', None)
+        last_login_at = getattr(u, 'last_login_at', None)
+
         user_data.append({
             'id': u.id,
             'name': u.name,
             'username': u.username,
             'role': u.role,
             'created_at': u.created_at.strftime('%d %b %Y') if u.created_at else 'N/A',
-            'last_ip': u.last_login_ip if u.last_login_ip else 'N/A',
-            'last_login': u.last_login_at.strftime('%d %b, %I:%M %p') if u.last_login_at else 'N/A',
+            'last_ip': last_ip if last_ip else 'N/A',
+            'last_login': last_login_at.strftime('%d %b, %I:%M %p') if last_login_at else 'N/A',
             'map_url': map_url,
             'loc_updated': u.loc_updated_at.strftime('%d %b, %I:%M %p') if u.loc_updated_at else None
         })
